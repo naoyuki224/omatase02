@@ -20,6 +20,7 @@ public class Completion : MonoBehaviour {
 
     }
 
+    //カーソルロックの切り替え
     public void InteractableChange()
     {
         if (Cursor.lockState == CursorLockMode.None)
