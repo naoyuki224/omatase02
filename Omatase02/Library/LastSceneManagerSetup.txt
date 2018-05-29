@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/masatake/sample.unity
+- path: Assets/naoyuki/TitleRankingScene.unity
   isLoaded: 1
   isActive: 1
