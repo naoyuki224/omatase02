@@ -4,12 +4,17 @@ using UnityEngine;
 
 public class MouseOpereter : MonoBehaviour
 {
-
     private Vector3 screenPoint;
     private Vector3 offset;
 
     void OnMouseDown()
     {
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
+            //Cursor.lockState = CursorLockMode.None;
+            return;  //lockStateがLockedだったら以後の処理をしない
+        }
+
         //カメラから見たオブジェクトの現在位置を画面位置座標に変換
         screenPoint = Camera.main.WorldToScreenPoint(transform.position);
 
@@ -22,6 +27,12 @@ public class MouseOpereter : MonoBehaviour
 
     void OnMouseDrag()
     {
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
+           // Cursor.lockState = CursorLockMode.None;
+            return;  //lockStateがLockedだったら以後の処理をしない
+        }
+
         //ドラッグ時のマウス位置をシーン上の座標に変換
         float posx = Input.mousePosition.x;
         float posy = Input.mousePosition.y;
@@ -35,10 +46,11 @@ public class MouseOpereter : MonoBehaviour
         transform.position = currentPosition;
     }
 
-    //   // Use this for initialization
-    //   void Start () {
+    //Use this for initialization
+   //void Start()
+   // {
 
-    //}
+   // }
 
     //// Update is called once per frame
     //void Update () {

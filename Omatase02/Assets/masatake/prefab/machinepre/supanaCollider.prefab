@@ -38,6 +38,7 @@ GameObject:
   - component: {fileID: 61996973925058706}
   - component: {fileID: 114176659299698948}
   - component: {fileID: 114003556658213368}
+  - component: {fileID: 58618430511980342}
   m_Layer: 0
   m_Name: supanaCollider
   m_TagString: machine
@@ -72,6 +73,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -23}
+--- !u!58 &58618430511980342
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1502368169757342}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
 --- !u!61 &61996973925058706
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -95,7 +111,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.5, y: 1}
+  m_Size: {x: 4, y: 1.4}
   m_EdgeRadius: 0
 --- !u!114 &114003556658213368
 MonoBehaviour:
@@ -120,6 +136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Temporary: []
+  ResetMethod: {fileID: 0}
 --- !u!212 &212953308571252680
 SpriteRenderer:
   m_ObjectHideFlags: 1
