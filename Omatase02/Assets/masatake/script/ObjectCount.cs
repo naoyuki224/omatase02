@@ -50,11 +50,8 @@ public class ObjectCount : MonoBehaviour {
         this.Order[1] = "機械スムージー";
         this.Order[2] = "ミートスムージー";
         this.Order[3] = "野菜スムージー";
-<<<<<<< HEAD
         this.Order[4] = "全混ぜスムージー";
-=======
-        //this.Order[4] = "全混ぜスムージー";
->>>>>>> 2016abdb77eaffcfebc62130167f74fd8347adf2
+
 
         this.CompletionButton = GameObject.Find("CompletionButton");
         this.ResetButton = GameObject.Find("ResetButton");
