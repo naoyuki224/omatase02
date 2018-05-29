@@ -12,7 +12,7 @@ public class Completion : MonoBehaviour {
     void Start ()
     {
         CompletionButton = GetComponent<Button>();
-        OB = GameObject.Find("mixer").GetComponent<ObjectCount>();
+        OB = GameObject.Find("mixerPrefab").GetComponent<ObjectCount>();
 	}
 	
 	// Update is called once per frame
@@ -20,19 +20,18 @@ public class Completion : MonoBehaviour {
 
     }
 
-    //カーソルロックの切り替え
-    public void InteractableChange()
+    //完成ボタンのON/OFFの切り替え
+    public void InteractableChangeTrue()
     {
-        if (Cursor.lockState == CursorLockMode.None)
-        {
-            CompletionButton.interactable = true;
-        }
-        else if(Cursor.lockState == CursorLockMode.Locked)
-        {
-            CompletionButton.interactable = false;
-        }
+        CompletionButton.interactable = true;
     }
 
+    public void InteractableChangeFalse()
+    {
+        CompletionButton.interactable = false;
+    }
+
+    //完成ボタンが押されたときにOrderResetを呼び出す関数
     public void ResetButton()
     {
         OB.OrderReset();
