@@ -12,7 +12,7 @@ public class Completion : MonoBehaviour {
     void Start ()
     {
         CompletionButton = GetComponent<Button>();
-        OB = GameObject.Find("mixerPrefab").GetComponent<ObjectCount>();
+        OB = GameObject.Find("Mixer").GetComponent<ObjectCount>();
 	}
 	
 	// Update is called once per frame

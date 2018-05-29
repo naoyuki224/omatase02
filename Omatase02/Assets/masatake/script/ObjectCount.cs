@@ -12,8 +12,6 @@ public class ObjectCount : MonoBehaviour {
         PERFORMANCETIME
     }
 
-    SpriteRenderer MainSpriteRenderer;//ミキサーのスプライトを取得するための変数
-
     Text Timer;
     Text Remaining;
     Text FoodObject;
@@ -23,14 +21,16 @@ public class ObjectCount : MonoBehaviour {
     GameObject CompletionButton;
     GameObject ResetButton;
 
-    private int foodcnt = 0;//食材の残りの数
     const int REMAINING = 5;
     const int price = 100;//スムージーの単価
-    [SerializeField] private float timelimit = 9.9f;
-    [SerializeField] private string[] Order = new string[10];
-    [SerializeField] private int foodflg = 99;//0でフルーツ、1で機械、2で肉、3で野菜、99で再取得(指定する種類を取得)
-    [SerializeField] private int playerflg = 99;//同上(プレイヤーが持っている種類)
-    [SerializeField] private bool flg = true;
+    const int ALLFOOD = 10;//全混ぜスムージーが発動するまでに完成させなければいけないスムージーの個数
+
+    private int foodcnt = 0;//食材の残りの数
+    private float timelimit = 9.9f;
+    private string[] Order = new string[10];
+    private int foodflg = 99;//0でフルーツ、1で機械、2で肉、3で野菜、99で再取得(指定する種類を取得)
+    private int playerflg = 99;//同上(プレイヤーが持っている種類)
+    private bool flg = true;
     public int SmoothieCount = 0;//完成させたスムージーの数
     public int TotalAmount = 0;//売上金額(入れた食材の数*100円)
     int TrustPer = 100;//信頼度
@@ -40,6 +40,8 @@ public class ObjectCount : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        Cursor.lockState = CursorLockMode.Locked;//カーソルをロック
+
         this.Timer = GameObject.Find("Timer").GetComponent<Text>();
         this.Remaining = GameObject.Find("remaining").GetComponent<Text>();
         this.FoodObject = GameObject.Find("FoodOrder").GetComponent<Text>();
@@ -50,7 +52,7 @@ public class ObjectCount : MonoBehaviour {
         this.Order[1] = "機械スムージー";
         this.Order[2] = "ミートスムージー";
         this.Order[3] = "野菜スムージー";
-        //this.Order[4] = "全混ぜスムージー";
+        this.Order[4] = "全混ぜスムージー";
 
         this.CompletionButton = GameObject.Find("CompletionButton");
         this.ResetButton = GameObject.Find("ResetButton");
@@ -125,9 +127,19 @@ public class ObjectCount : MonoBehaviour {
 
     private void OrderCount()//新たな注文を取得
     {
+        playerflg = 99;
         foodcnt = 0;
-        foodflg = Random.Range(0, 4);
-        FoodObject.text = this.Order[foodflg];
+
+        if(SmoothieCount % ALLFOOD == 0 && SmoothieCount != 0)
+        {
+            FoodObject.text = this.Order[4];//全混ぜスムージー
+        }
+        else
+        {
+            foodflg = Random.Range(0, 4);//注文を再取得
+            FoodObject.text = this.Order[foodflg];
+        }
+
         CompletionButton.GetComponent<Completion>().InteractableChangeFalse();//完成ボタンを押せないように変更
         //Debug.Log(Order[foodflg]);
         //Debug.Log(foodcnt);
@@ -138,9 +150,9 @@ public class ObjectCount : MonoBehaviour {
         OrderCount();
         Invoke("CursleFlagChange",2);//2秒後に操作可能にする
 
-        AmountText.text = string.Format("{0,8}", (this.TotalAmount.ToString("F0") + "円"));
+        AmountText.text = string.Format("{0,8}", (this.TotalAmount.ToString("F0") + "円"));//合計金額
 
-        TrustText.text = this.TrustPer.ToString("F0") + "％";//
+        TrustText.text = this.TrustPer.ToString("F0") + "％";//信頼度
 
         //Debug.Log("PerformanceTime");
 
@@ -150,7 +162,15 @@ public class ObjectCount : MonoBehaviour {
     private void CursleFlagChange()//カーソル無効の解除
     {
         Cursor.lockState = CursorLockMode.None;
-        ProcessFlg = (int)Process.MAINPROCESS;//MainProcessに移行
+
+        if (SmoothieCount % ALLFOOD == 0 && SmoothieCount != 0)
+        {
+            ProcessFlg = (int)Process.BONUSTIME;//BonusTimeに移行
+        }
+        else
+        {
+            ProcessFlg = (int)Process.MAINPROCESS;//MainProcessに移行
+        }
     }
 
     public void OrderReset()//注文の切り替え
@@ -161,13 +181,15 @@ public class ObjectCount : MonoBehaviour {
         {
             SmoothieCount++;
             TrustPer += 10;
-            if(TrustPer >= 100)
+
+            if (TrustPer >= 100)
             {
                 TrustPer = 100;
             }
+
             TotalAmount += price * foodcnt;//合計金額
 
-            if(SmoothieCount % 10 == 0 && TrustLevel < 2)//完成させたスムージーの数が10の倍数の時、信頼度のレベルを上げる。かつ、ボーナスタイムに突入
+            if(SmoothieCount % ALLFOOD == 0 && SmoothieCount != 0)//完成させたスムージーの数が10の倍数の時、信頼度のレベルを上げる。
             {
                 TrustLevel++;
             }
@@ -175,7 +197,8 @@ public class ObjectCount : MonoBehaviour {
         else//注文と違う食材を入れたとき
         {
             TrustPer -= Trustarray[TrustLevel];
-            if(TrustPer <= 0)
+
+            if (TrustPer <= 0)
             {
                 TrustPer = 0;
                 Debug.Log("GameOver");
@@ -195,7 +218,33 @@ public class ObjectCount : MonoBehaviour {
 
     void BonusTime()//全混ぜスムージー
     {
+        if (playerflg != 99 && Input.GetMouseButtonUp(0))//ミキサーに食材を入れたとき
+        {
+            foodcnt++;
+            playerflg = 99;
+        }
 
+        TimeCount();//時間の取得
+
+        if (this.timelimit <= 0)
+        {
+            OrderReset();//注文の切り替え
+        }
+
+        //if ((REMAINING - foodcnt) > 0)//食材の残りの数の表示
+        //{
+        //    Remaining.text = (REMAINING - this.foodcnt).ToString("F0");
+        //}
+        //else
+        //{
+        //    Remaining.text = "OK";
+        //    CompletionButton.GetComponent<Completion>().InteractableChangeTrue();
+        //    Debug.Log("OK");
+        //}
+
+
+        //今はボーナスタイム中は食材の残りの数を∞にして、完成ボタンは押せないようにする
+        Remaining.text = "∞";
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
