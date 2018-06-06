@@ -13,10 +13,10 @@ public class Create : MonoBehaviour {
         GenerationObject(this.transform.position);
     }
 
-    // Update is called once per frame
-    void Update () {
+    //// Update is called once per frame
+    //void Update () {
 
-    }
+    //}
 
     public void GenerationObject(Vector2 position)//オブジェクトの生成
     {

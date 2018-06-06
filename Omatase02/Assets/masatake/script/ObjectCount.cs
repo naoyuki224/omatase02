@@ -11,10 +11,14 @@ public class ObjectCount : MonoBehaviour {
         BONUSTIME,
         FADEINPROCESS,
         FADEOUTPROCESS,
-        PERFORMANCETIME,
-        FADEINTEST=100,
-        FADEOUTTEST
+        CUSTOMERIN,
+        CUSTOMEROUT,
+        COMMENT,
+        PERFORMANCETIME
     }
+
+    //お客さんの画像
+    public GameObject [] CustomerImage;
 
     //ミキサーのレンダラーと色の変数
     Renderer MixRenderer;
@@ -23,6 +27,10 @@ public class ObjectCount : MonoBehaviour {
     //ブラックホールのレンダラーと色の変数
     Renderer BlaRenderer;
     Color BlaColor;
+
+    //宇宙人のレンダラーと色の変数
+    Renderer AlienRenderer;
+    Color AlienColor;
 
     //画像を切り替えるための変数
     GameObject MixerImage;
@@ -37,25 +45,41 @@ public class ObjectCount : MonoBehaviour {
     GameObject CompletionButton;
     GameObject ResetButton;
 
+    Rigidbody2D[] CustomerRigid;//お客さんのRigidbody
+
     const int TestValue = 100;
 
-    const int REMAINING = 5;
+    const int REMAINING = 1;
     const int price = 100;//スムージーの単価
     const int ALLFOOD = 10;//全混ぜスムージーが発動するまでに完成させなければいけないスムージーの個数
+    const float InvokeTime = 1.0f;//プレイヤーの待ち時間
 
     private int foodcnt = 0;//食材の残りの数
     private float timelimit = 9.9f;
-    private string[] Order = new string[10];
+    private string[] Order;
     private int foodflg = 99;//0でフルーツ、1で機械、2で肉、3で野菜、99で再取得(指定する種類を取得)
     private int playerflg = 99;//同上(プレイヤーが持っている種類)
-    private bool flg = true;
+    private bool Performanceflg = true;//PerformanceTime()に1回だけ入るための関数
     public int SmoothieCount = 0;//完成させたスムージーの数
     public int TotalAmount = 0;//売上金額(入れた食材の数*100円)
     int TrustPer = 100;//信頼度
     int[] Trustarray = { 25, 50,75 };//信頼度のレベルに応じた信頼度の減り方
     int TrustLevel = 0;//信頼度のレベル(隠しステータス)
-    int ProcessFlg = (int)Process.PERFORMANCETIME;//0でMainProcess、1でBonusTime、2でPerformanceTime
+    int ProcessFlg = (int)Process.PERFORMANCETIME;//場面の切り替え
+    int W=4;//退避用変数
+    float TimeMemory = 0;//一時的に時間を保存するための変数
+    bool CustomerInflg = false;//お客さんの入店のフラグ
+    bool CommentFlg = false;//コメントを一度だけ入るフラグ
+    //お客さんのコメント(後から配列にしてコメントをいくつか用意する)
+    string [] Goodcomment;
+    string [] Badcomment;
 
+    //お客さんがフェードイン、フェードアウトするときにどこまで移動するかの値
+    float [] CustomerOutPosition;
+    float[] CustomerInPosition;
+
+
+    //ミキサーがフェードイン・フェードアウトするスピード
     const float speed = 0.01f;
 
     // Use this for initialization
@@ -68,11 +92,59 @@ public class ObjectCount : MonoBehaviour {
         this.AmountText = GameObject.Find("TotalAmount").GetComponent<Text>();
         this.TrustText = GameObject.Find("Trust").GetComponent<Text>();
 
-        this.Order[0] = "フルーツスムージー";
-        this.Order[1] = "機械スムージー";
-        this.Order[2] = "ミートスムージー";
-        this.Order[3] = "野菜スムージー";
-        this.Order[4] = "全混ぜスムージー";
+        this.CustomerImage = new GameObject[5];
+
+        this.CustomerImage[0] = GameObject.Find("jk");
+        this.CustomerImage[1] = GameObject.Find("robot");
+        this.CustomerImage[2] = GameObject.Find("animal");
+        this.CustomerImage[3] = GameObject.Find("man");
+        this.CustomerImage[4] = GameObject.Find("utyuzinn");
+
+        this.CustomerRigid = new Rigidbody2D[4];
+
+        for(int i=0; i<4; i++)
+        {
+            CustomerRigid[i] = CustomerImage[i].GetComponent<Rigidbody2D>();
+        }
+
+        //お客さんが移動する範囲の値
+        CustomerInPosition = new float[4];
+        CustomerOutPosition = new float[4];
+
+        CustomerInPosition[0] = -21.8f;
+        CustomerInPosition[1] = -22.6f;
+        CustomerInPosition[2] = -24.3f;
+        CustomerInPosition[3] = -21.4f;
+
+        CustomerOutPosition[0] = -28.7f;
+        CustomerOutPosition[1] = -32.5f;
+        CustomerOutPosition[2] = -31.5f;
+        CustomerOutPosition[3] = -29.1f;
+
+        this.Order = new string[5];
+
+        this.Order[0] = "フルーツスムージーください！";
+        this.Order[1] = "機械スムージーください！";
+        this.Order[2] = "ミートスムージーください！";
+        this.Order[3] = "野菜スムージーください！";
+        this.Order[4] = "ゼンブマゼテ";
+
+        this.Goodcomment = new string[5];
+        this.Badcomment = new string[5];
+
+        this.Goodcomment[0] = "うん、おいしい！";
+        this.Goodcomment[1] = "ええやん、気に入った";
+        this.Goodcomment[2] = "ああ～いいっすねぇ";
+        this.Goodcomment[3] = "ありがとうございます";
+        this.Goodcomment[4] = "最高やな！";
+
+        this.Badcomment[0] = "(この店)やめたら？";
+        this.Badcomment[1] = "あ ほ く さ";
+        this.Badcomment[2] = "こんなん商品なんないから";
+        this.Badcomment[3] = "あのさぁ...";
+        this.Badcomment[4] = "あっ...";
+
+        //this.CustomerImage[4].SetActive(false);
 
         this.CompletionButton = GameObject.Find("CompletionButton");
         this.ResetButton = GameObject.Find("ResetButton");
@@ -84,7 +156,6 @@ public class ObjectCount : MonoBehaviour {
         this.BlackHoleImage = GameObject.Find("BlackHolePrefab");
 
         //ミキサーのRGB値を取得
-
         MixRenderer = MixerImage.GetComponent<Renderer>();
         MixColor = MixRenderer.material.color;
         MixColor.a = 1.0f;
@@ -96,7 +167,20 @@ public class ObjectCount : MonoBehaviour {
 
         BlaRenderer.material.color = BlaColor;//変更したアルファ値を反映させる
 
+        //宇宙人のRGB値を取得
+        AlienRenderer = CustomerImage[4].GetComponent<Renderer>();
+        AlienColor = AlienRenderer.material.color;
+        AlienColor.a = 0;
+
+        AlienRenderer.material.color = AlienColor;//変更したアルファ値を反映させる
+
         this.BlackHoleImage.SetActive(false);
+
+        OrderCount();
+
+        AmountText.text = string.Format("{0,8}", (this.TotalAmount.ToString("F0") + "円"));//合計金額
+
+        TrustText.text = this.TrustPer.ToString("F0") + "％";//信頼度
     }
 
     // Update is called once per frame
@@ -142,8 +226,26 @@ public class ObjectCount : MonoBehaviour {
                 MixerFadeOutProcess();
                 break;
 
+            case (int)Process.CUSTOMERIN://お客さん入店
+                if (CustomerInflg)
+                {
+                    CustomerIN();
+                }
+                break;
+
+            case (int)Process.CUSTOMEROUT://お客さん退店
+                CustomerOUT();
+                break;
+
+            case (int)Process.COMMENT://お客さんのコメント
+                if (CommentFlg)
+                {
+                    CommentTime();
+                }
+                break;
+
             case (int)Process.PERFORMANCETIME://注文の切り替え
-                if (flg)
+                if (Performanceflg)
                 {
                     PerformanceTime();
                 }
@@ -179,7 +281,6 @@ public class ObjectCount : MonoBehaviour {
         {
             Remaining.text = "OK";
             CompletionButton.GetComponent<Completion>().InteractableChangeTrue();
-            Debug.Log("OK");
         }
     }
 
@@ -200,25 +301,33 @@ public class ObjectCount : MonoBehaviour {
         playerflg = 99;
         foodcnt = 0;
 
-        if(SmoothieCount % ALLFOOD == 0 && SmoothieCount != 0)//完成したスムージーの数が10の倍数の時、全混ぜと信頼度のレベルを上げる
+        if(SmoothieCount % ALLFOOD == 0 && SmoothieCount != 0)//完成したスムージーの数が10の倍数の時、全混ぜを発動させる
         {
-            FoodObject.text = this.Order[4];//全混ぜスムージー            
+            FoodObject.text = this.Order[4];//全混ぜスムージー 
+            //CustomerImage[4].SetActive(true);
 
-            //ミキサーの画像を非表示にし、ブラックホールの画像を表示する
+            //ミキサーの画像を非表示にする
             MixerImage.SetActive(false);
             if (TrustLevel < 2)
             {
                 TrustLevel++;//信頼度のレベルを上げる
             }
+
+            Invoke("CursleFlagChange", InvokeTime);
         }
         else
         {
             if(SmoothieCount % ALLFOOD == 1 && SmoothieCount != 1)
             {
                 BlackHoleImage.SetActive(false);
+               // CustomerImage[4].SetActive(false);
             }
+
             foodflg = Random.Range(0, 4);//注文を再取得
-            FoodObject.text = this.Order[foodflg];
+            W = foodflg;
+
+            CustomerInflg = true;//お客さんの入店を許可する
+            ProcessFlg = (int)Process.CUSTOMERIN;//お客さんの入店
         }
 
         CompletionButton.GetComponent<Completion>().InteractableChangeFalse();//完成ボタンを押せないように変更
@@ -229,15 +338,11 @@ public class ObjectCount : MonoBehaviour {
     private void PerformanceTime()
     {
         OrderCount();
-        Invoke("CursleFlagChange",2);//2秒後に操作可能にする
-
-        AmountText.text = string.Format("{0,8}", (this.TotalAmount.ToString("F0") + "円"));//合計金額
-
-        TrustText.text = this.TrustPer.ToString("F0") + "％";//信頼度
+        //Invoke("CursleFlagChange", 2);//2秒後に操作可能にする
 
         //Debug.Log("PerformanceTime");
 
-        flg = false;
+        Performanceflg = false;
     }
 
     private void CursleFlagChange()//カーソル無効の解除
@@ -254,14 +359,14 @@ public class ObjectCount : MonoBehaviour {
         }
     }
 
-        public void OrderReset()//注文の切り替え
+    public void OrderReset()//注文の切り替え
     {
         this.timelimit = 9.9f;//制限時間のリセット
 
         if((foodflg < 99 && REMAINING <= foodcnt) || ProcessFlg == (int)Process.BONUSTIME)//注文のスムージーが完成したとき
         {
             SmoothieCount++;
-            TrustPer += 10;
+            TrustPer += 10;//信頼度の回復
 
             if (TrustPer >= 100)
             {
@@ -270,8 +375,13 @@ public class ObjectCount : MonoBehaviour {
 
             TotalAmount += price * foodcnt;//合計金額
 
-            if(SmoothieCount % ALLFOOD == 0 && SmoothieCount != 0)//完成させたスムージーの数が10の倍数の時、信頼度のレベルを上げる。
+            if (ProcessFlg == (int)Process.BONUSTIME)
             {
+                FoodObject.text = "マタクルヨ";
+            }
+            else
+            {
+                FoodObject.text = Goodcomment[Random.Range(0, 5)];//完成させたときのコメント
             }
         }
         else//注文と違う食材を入れたとき
@@ -283,7 +393,13 @@ public class ObjectCount : MonoBehaviour {
                 TrustPer = 0;
                 Debug.Log("GameOver");
             }
+
+            FoodObject.text = Badcomment[Random.Range(0,5)];
         }
+
+        AmountText.text = string.Format("{0,8}", (this.TotalAmount.ToString("F0") + "円"));//合計金額
+
+        TrustText.text = this.TrustPer.ToString("F0") + "％";//信頼度
 
         Debug.Log(SmoothieCount);
         //Debug.Log("TimeReset");
@@ -292,21 +408,20 @@ public class ObjectCount : MonoBehaviour {
         ResetButton.GetComponent<FoodReset>().InteractableChangeTrue();
         Cursor.lockState = CursorLockMode.Locked;//カーソルをロック
 
-        flg = true;
-        if (SmoothieCount % ALLFOOD == 0 && SmoothieCount != 0)
-        {
-            ProcessFlg = (int)Process.FADEOUTPROCESS;//ミキサーのフェードアウト処理に移行
-            BlackHoleImage.SetActive(true);
-        }
-        else if(SmoothieCount % ALLFOOD == 1 && SmoothieCount != 0)
-        {
-            ProcessFlg = (int)Process.FADEINPROCESS;//ミキサーのフェードイン処理に移行
-            MixerImage.SetActive(true);
-        }
-        else
-        {
-            ProcessFlg = (int)Process.PERFORMANCETIME;//待機時間の処理に移行
-        }
+        Performanceflg = true;
+        ProcessFlg = (int)Process.COMMENT;//お客さんのコメント
+        CommentFlg = true;
+    }
+
+    void CommentTime()
+    {
+        Invoke("NextProcess", 0.5f);
+        CommentFlg = false;
+    }
+
+    void NextProcess()
+    {
+        ProcessFlg = (int)Process.CUSTOMEROUT;//お客さんの退店
     }
 
     void BonusTime()//全混ぜスムージー
@@ -340,15 +455,17 @@ public class ObjectCount : MonoBehaviour {
         Remaining.text = "∞";
     }
 
-    private void MixerFadeInProcess()//ミキサーのフェードイン処理、ブラックホールのフェードアウト処理
+    private void MixerFadeInProcess()//ミキサーのフェードイン処理、ブラックホールと宇宙人のフェードアウト処理
     {
-        //ミキサーとブラックホールの同時フェード処理
+        //ミキサーとブラックホールと宇宙人の同時フェード処理
         if (MixColor.a < 1.0f)
         {
             MixColor.a += speed;
             BlaColor.a -= speed;
+            AlienColor.a -= speed;
             MixRenderer.material.color = MixColor;
             BlaRenderer.material.color = BlaColor;
+            AlienRenderer.material.color = AlienColor;
         }
         else
         {
@@ -373,7 +490,7 @@ public class ObjectCount : MonoBehaviour {
 
     }
 
-    private void MixerFadeOutProcess()//ミキサーのフェードアウト処理、ブラックホールのフェードイン処理
+    private void MixerFadeOutProcess()//ミキサーのフェードアウト処理、ブラックホールと宇宙人ののフェードイン処理
     {
         ////ミキサーとブラックホールの同時フェード処理
         //if (MixColor.a > 0)
@@ -388,7 +505,7 @@ public class ObjectCount : MonoBehaviour {
         //    ProcessFlg = (int)Process.PERFORMANCETIME;
         //}
 
-        //先にミキサーがフェードアウト処理、その後ブラックホールのフェードイン処理
+        //先にミキサーがフェードアウト処理、その後ブラックホールと宇宙人のフェードイン処理
         if (MixColor.a > 0)
         {
             MixColor.a -= speed;
@@ -397,13 +514,58 @@ public class ObjectCount : MonoBehaviour {
         else if (BlaColor.a < 1.0f)
         {
             BlaColor.a += speed;
+            AlienColor.a += speed;
             BlaRenderer.material.color = BlaColor;
+            AlienRenderer.material.color = AlienColor;
         }
         else
         {
             ProcessFlg = (int)Process.PERFORMANCETIME;
         }
 
+    }
+
+    private void CustomerIN()
+    {
+        if (CustomerImage[W].transform.localPosition.x < CustomerInPosition[W])
+        {
+            CustomerRigid[W].velocity = new Vector2(3, 0);
+        }
+        else
+        {
+            //ProcessFlg = (int)Process.PERFORMANCETIME;//待機時間に移行
+            CustomerRigid[W].velocity = Vector2.zero;
+            Invoke("CursleFlagChange", InvokeTime);//0.5秒後に操作可能にする
+            FoodObject.text = this.Order[foodflg];
+            CustomerInflg = false;
+        }
+    }
+
+    private void CustomerOUT()
+    {
+        if (CustomerImage[W].transform.localPosition.x > CustomerOutPosition[W])
+        {
+            CustomerRigid[W].velocity = new Vector2(-3, 0);
+        }
+        else
+        {
+            CustomerRigid[W].velocity = Vector2.zero;
+
+            if (SmoothieCount % ALLFOOD == 0 && SmoothieCount != 0)
+            {
+                ProcessFlg = (int)Process.FADEOUTPROCESS;//ミキサーのフェードアウト処理に移行
+                BlackHoleImage.SetActive(true);
+            }
+            else if (SmoothieCount % ALLFOOD == 1 && SmoothieCount != 1)
+            {
+                ProcessFlg = (int)Process.FADEINPROCESS;//ミキサーのフェードイン処理に移行
+                MixerImage.SetActive(true);
+            }
+            else
+            {
+                ProcessFlg = (int)Process.PERFORMANCETIME;//待機時間の処理に移行
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
