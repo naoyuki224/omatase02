@@ -40,6 +40,16 @@ public class ObjectCount : MonoBehaviour {
     GameObject MixerImage;
     GameObject BlackHoleImage;
 
+    //人気度を揺らすための変数
+    public Transform TrustTextTransform;
+    Transform TrustPerTransform;
+
+    //開始時の位置
+    Vector3 TrustTextPosition;
+    Vector3 TrustPerPosotion;
+
+    Vector3 ShakeRange;//揺れる範囲
+
     Text Timer;
     Text Remaining;
     Text FoodObject;
@@ -78,6 +88,12 @@ public class ObjectCount : MonoBehaviour {
     //合計金額に加算するテキストのポジション
     float PlusMoneyPositionX;
     float PlusMoneyPositionY;
+
+    //揺らす強さ
+    public float ShakePowerText;
+    public float ShakePowerPer;
+
+    bool trustflg = false;
 
     //お客さんがフェードイン、フェードアウトするときにどこまで移動するかの値
     float [] CustomerOutPosition;
@@ -134,20 +150,24 @@ public class ObjectCount : MonoBehaviour {
         this.Order[3] = "野菜スムージーください！";
         this.Order[4] = "ゼンブマゼテ";
 
-        this.Goodcomment = new string[5];
-        this.Badcomment = new string[5];
+        this.Goodcomment = new string[7];
+        this.Badcomment = new string[7];
 
         this.Goodcomment[0] = "うん、おいしい！";
         this.Goodcomment[1] = "ええやん、気に入った";
         this.Goodcomment[2] = "ああ～いいっすねぇ";
         this.Goodcomment[3] = "ありがとうございます";
         this.Goodcomment[4] = "最高やな！";
+        this.Goodcomment[5] = "美味スギィ！";
+        this.Goodcomment[6] = "君もうまそうやな～ほんま";
 
         this.Badcomment[0] = "(この店)やめたら？";
         this.Badcomment[1] = "あ ほ く さ";
         this.Badcomment[2] = "こんなん商品なんないから";
         this.Badcomment[3] = "あのさぁ...";
         this.Badcomment[4] = "あっ...";
+        this.Badcomment[5] = "はぁ～つっかえ！";
+        this.Badcomment[6] = "いなりが入ってないやん！";
 
         //this.CustomerImage[4].SetActive(false);
 
@@ -191,6 +211,13 @@ public class ObjectCount : MonoBehaviour {
 
         this.BlackHoleImage.SetActive(false);
 
+        //人気度をGetComponentする
+        TrustPerTransform = TrustText.GetComponent<Transform>();
+
+        //人気度のテキストを揺らすときの開始時の位置を取得
+        TrustPerPosotion = TrustPerTransform.position;
+        TrustTextPosition = TrustTextTransform.position;
+
         OrderCount();
 
         AmountText.text = string.Format("{0,8}", (this.TotalAmount.ToString("F0") + "円"));//合計金額
@@ -221,6 +248,14 @@ public class ObjectCount : MonoBehaviour {
         //{
         //    PerformanceTime();
         //}
+
+        //次失敗したときにゲームオーバーになるときに人気度を揺らす
+        if (Trustarray[TrustLevel] >= TrustPer)
+        {
+            ShakeRange = Random.insideUnitSphere;
+            TrustTextTransform.position = TrustTextPosition + ShakeRange * ShakePowerText;
+            TrustPerTransform.position = TrustPerPosotion + ShakeRange * ShakePowerPer;
+        }
 
         switch (ProcessFlg)
         {
@@ -396,7 +431,7 @@ public class ObjectCount : MonoBehaviour {
             }
             else
             {
-                FoodObject.text = Goodcomment[Random.Range(0, 5)];//完成させたときのコメント
+                FoodObject.text = Goodcomment[Random.Range(0, 7)];//完成させたときのコメント
             }
         }
         else//注文と違う食材を入れたとき
@@ -409,7 +444,7 @@ public class ObjectCount : MonoBehaviour {
                 Debug.Log("GameOver");
             }
 
-            FoodObject.text = Badcomment[Random.Range(0,5)];
+            FoodObject.text = Badcomment[Random.Range(0,7)];
         }
 
         AmountText.text = string.Format("{0,5}", (this.TotalAmount.ToString("F0") + "円"));//合計金額
