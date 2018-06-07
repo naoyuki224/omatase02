@@ -1,4 +1,8 @@
 sceneSetups:
+<<<<<<< HEAD
 - path: Assets/kazuki/Help.unity
+=======
+- path: Assets/masatake/sample.unity
+>>>>>>> bceb652c8f5a52b1eb44b5483c6f620ff71a4293
   isLoaded: 1
   isActive: 1
