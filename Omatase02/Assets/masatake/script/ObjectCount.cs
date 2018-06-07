@@ -32,6 +32,10 @@ public class ObjectCount : MonoBehaviour {
     Renderer AlienRenderer;
     Color AlienColor;
 
+    //合計金額に加算するときのテキストの色の変数
+    Color PlusColor;
+
+
     //画像を切り替えるための変数
     GameObject MixerImage;
     GameObject BlackHoleImage;
@@ -41,15 +45,14 @@ public class ObjectCount : MonoBehaviour {
     Text FoodObject;
     Text AmountText;
     Text TrustText;
+    Text PlusMoneyText;
 
     GameObject CompletionButton;
     GameObject ResetButton;
 
     Rigidbody2D[] CustomerRigid;//お客さんのRigidbody
 
-    const int TestValue = 100;
-
-    const int REMAINING = 1;
+    const int REMAINING = 5;
     const int price = 100;//スムージーの単価
     const int ALLFOOD = 10;//全混ぜスムージーが発動するまでに完成させなければいけないスムージーの個数
     const float InvokeTime = 1.0f;//プレイヤーの待ち時間
@@ -67,17 +70,18 @@ public class ObjectCount : MonoBehaviour {
     int TrustLevel = 0;//信頼度のレベル(隠しステータス)
     int ProcessFlg = (int)Process.PERFORMANCETIME;//場面の切り替え
     int W=4;//退避用変数
-    float TimeMemory = 0;//一時的に時間を保存するための変数
     bool CustomerInflg = false;//お客さんの入店のフラグ
     bool CommentFlg = false;//コメントを一度だけ入るフラグ
-    //お客さんのコメント(後から配列にしてコメントをいくつか用意する)
+    //お客さんのコメント
     string [] Goodcomment;
     string [] Badcomment;
+    //合計金額に加算するテキストのポジション
+    float PlusMoneyPositionX;
+    float PlusMoneyPositionY;
 
     //お客さんがフェードイン、フェードアウトするときにどこまで移動するかの値
     float [] CustomerOutPosition;
     float[] CustomerInPosition;
-
 
     //ミキサーがフェードイン・フェードアウトするスピード
     const float speed = 0.01f;
@@ -91,6 +95,7 @@ public class ObjectCount : MonoBehaviour {
         this.FoodObject = GameObject.Find("FoodOrder").GetComponent<Text>();
         this.AmountText = GameObject.Find("TotalAmount").GetComponent<Text>();
         this.TrustText = GameObject.Find("Trust").GetComponent<Text>();
+        this.PlusMoneyText = GameObject.Find("PlusMoney").GetComponent<Text>();
 
         this.CustomerImage = new GameObject[5];
 
@@ -173,6 +178,16 @@ public class ObjectCount : MonoBehaviour {
         AlienColor.a = 0;
 
         AlienRenderer.material.color = AlienColor;//変更したアルファ値を反映させる
+
+        //合計金額に加算するときのテキストのRGB値を取得
+        PlusColor = PlusMoneyText.GetComponent<Text>().color;
+        PlusColor.a = 0;
+
+        PlusMoneyText.GetComponent<Text>().color = PlusColor;//変更したアルファ値を反映させる
+
+        //Unity上で位置の変更をしても大丈夫なように合計金額に加算するときのテキストのポジションを取得
+        PlusMoneyPositionX = PlusMoneyText.transform.position.x;
+        PlusMoneyPositionY = PlusMoneyText.transform.position.y;
 
         this.BlackHoleImage.SetActive(false);
 
@@ -397,7 +412,8 @@ public class ObjectCount : MonoBehaviour {
             FoodObject.text = Badcomment[Random.Range(0,5)];
         }
 
-        AmountText.text = string.Format("{0,8}", (this.TotalAmount.ToString("F0") + "円"));//合計金額
+        AmountText.text = string.Format("{0,5}", (this.TotalAmount.ToString("F0") + "円"));//合計金額
+        PlusMoneyText.text = "＋" + (foodcnt * price).ToString("F0");
 
         TrustText.text = this.TrustPer.ToString("F0") + "％";//信頼度
 
@@ -408,6 +424,7 @@ public class ObjectCount : MonoBehaviour {
         ResetButton.GetComponent<FoodReset>().InteractableChangeTrue();
         Cursor.lockState = CursorLockMode.Locked;//カーソルをロック
 
+        PlusColor.a = 1.0f;
         Performanceflg = true;
         ProcessFlg = (int)Process.COMMENT;//お客さんのコメント
         CommentFlg = true;
@@ -415,8 +432,24 @@ public class ObjectCount : MonoBehaviour {
 
     void CommentTime()
     {
-        Invoke("NextProcess", 0.5f);
-        CommentFlg = false;
+
+        if(foodcnt < REMAINING)
+        {
+            Invoke("NextProcess", 0.9f);
+            CommentFlg = false;
+        }
+        else if(PlusColor.a > 0)
+        {
+            PlusMoneyText.transform.Translate(0, 0.2f, 0);
+            PlusColor.a -= 0.02f;
+            PlusMoneyText.color = PlusColor;
+        }
+        else
+        {
+            ProcessFlg = (int)Process.CUSTOMEROUT;//お客さんの退店
+            CommentFlg = false;
+            PlusMoneyText.transform.position = new Vector2(PlusMoneyPositionX, PlusMoneyPositionY);
+        }
     }
 
     void NextProcess()
