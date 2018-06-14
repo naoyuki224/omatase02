@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212377089552962808}
   - component: {fileID: 114386636495785850}
   - component: {fileID: 114188783483433096}
-  - component: {fileID: 60348424717921332}
+  - component: {fileID: 58208836381023658}
   m_Layer: 0
   m_Name: ApplePre
   m_TagString: fruit
@@ -43,8 +43,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!60 &60348424717921332
-PolygonCollider2D:
+--- !u!58 &58208836381023658
+CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -55,43 +55,9 @@ PolygonCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.48, y: 1.48}
-    newSize: {x: 1.48, y: 1.48}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.53999996, y: 0.19}
-      - {x: 0.51, y: 0.32}
-      - {x: 0.48, y: 0.37}
-      - {x: 0.34, y: 0.52}
-      - {x: 0.26, y: 0.55}
-      - {x: 0.21, y: 0.63}
-      - {x: 0.19, y: 0.71}
-      - {x: 0.07, y: 0.71}
-      - {x: 0, y: 0.7}
-      - {x: -0.13, y: 0.7}
-      - {x: -0.14999999, y: 0.68}
-      - {x: -0.13, y: 0.58}
-      - {x: -0.31, y: 0.58}
-      - {x: -0.45, y: 0.53}
-      - {x: -0.62, y: 0.39}
-      - {x: -0.68, y: 0.24}
-      - {x: -0.68, y: -0.08}
-      - {x: -0.62, y: -0.26}
-      - {x: -0.41, y: -0.45}
-      - {x: -0.29, y: -0.51}
-      - {x: -0.17, y: -0.53999996}
-      - {x: 0.099999994, y: -0.53999996}
-      - {x: 0.25, y: -0.48}
-      - {x: 0.42, y: -0.32}
-      - {x: 0.53999996, y: -0.08}
+  m_Offset: {x: -0.06, y: 0.05}
+  serializedVersion: 2
+  m_Radius: 0.7
 --- !u!114 &114188783483433096
 MonoBehaviour:
   m_ObjectHideFlags: 1

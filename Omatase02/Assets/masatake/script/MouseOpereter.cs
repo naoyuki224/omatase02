@@ -7,6 +7,8 @@ public class MouseOpereter : MonoBehaviour
     private Vector3 screenPoint;
     private Vector3 offset;
 
+    EventSystemController EventSystemObject;
+
     void OnMouseDown()
     {
         if (Cursor.lockState == CursorLockMode.Locked)
@@ -47,10 +49,12 @@ public class MouseOpereter : MonoBehaviour
     }
 
     //Use this for initialization
-   //void Start()
-   // {
-
-   // }
+    void Start()
+    {
+        Input.multiTouchEnabled = false;//マルチタッチを無効化
+        this.EventSystemObject = GameObject.Find("EventSystem").GetComponent<EventSystemController>();//EventSystemControllerスクリプトを取得
+        EventSystemObject.isInputEnable = false;//タッチ操作を無効化
+    }
 
     //// Update is called once per frame
     //void Update () {
