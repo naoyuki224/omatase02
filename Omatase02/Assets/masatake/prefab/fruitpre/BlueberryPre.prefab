@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212611452301418644}
   - component: {fileID: 114219873951598216}
   - component: {fileID: 114797623855826894}
-  - component: {fileID: 60089519970360222}
+  - component: {fileID: 58669470812441626}
   m_Layer: 0
   m_Name: BlueberryPre
   m_TagString: fruit
@@ -43,8 +43,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!60 &60089519970360222
-PolygonCollider2D:
+--- !u!58 &58669470812441626
+CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -55,50 +55,9 @@ PolygonCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.48, y: 1.48}
-    newSize: {x: 1.48, y: 1.48}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.31, y: -0.29}
-      - {x: 0.29999998, y: -0.16}
-      - {x: 0.39999998, y: -0.049999997}
-      - {x: 0.53, y: -0.04}
-      - {x: 0.7, y: 0.07}
-      - {x: 0.7, y: 0.13}
-      - {x: 0.38, y: 0.45999998}
-      - {x: 0.32999998, y: 0.68}
-      - {x: 0.29999998, y: 0.69}
-      - {x: 0.26, y: 0.69}
-      - {x: 0.17, y: 0.56}
-      - {x: 0.08, y: 0.53}
-      - {x: -0.07, y: 0.61}
-      - {x: -0.28, y: 0.61}
-      - {x: -0.44, y: 0.56}
-      - {x: -0.65, y: 0.39999998}
-      - {x: -0.65, y: 0.35999998}
-      - {x: -0.59999996, y: 0.29}
-      - {x: -0.63, y: 0.049999997}
-      - {x: -0.65, y: -0.03}
-      - {x: -0.65, y: -0.12}
-      - {x: -0.59999996, y: -0.16}
-      - {x: -0.57, y: -0.35}
-      - {x: -0.51, y: -0.42999998}
-      - {x: -0.41, y: -0.48}
-      - {x: -0.41, y: -0.64}
-      - {x: -0.34, y: -0.69}
-      - {x: -0.26, y: -0.7}
-      - {x: -0.24, y: -0.7}
-      - {x: -0.01, y: -0.62}
-      - {x: 0.08, y: -0.61}
-      - {x: 0.14, y: -0.61}
+  m_Offset: {x: -0.05, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.8
 --- !u!114 &114219873951598216
 MonoBehaviour:
   m_ObjectHideFlags: 1

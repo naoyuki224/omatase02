@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212717901805774164}
   - component: {fileID: 114487183053789294}
   - component: {fileID: 114117835084933394}
-  - component: {fileID: 60846455716799648}
+  - component: {fileID: 58557995222592460}
   m_Layer: 0
   m_Name: BoltPre
   m_TagString: machine
@@ -43,8 +43,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!60 &60846455716799648
-PolygonCollider2D:
+--- !u!58 &58557995222592460
+CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -55,29 +55,9 @@ PolygonCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.48, y: 1.48}
-    newSize: {x: 1.48, y: 1.48}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.24, y: 0.21}
-      - {x: 0.21, y: 0.25}
-      - {x: -0.26999998, y: 0.25}
-      - {x: -0.45999998, y: -0.02}
-      - {x: -0.45999998, y: -0.32}
-      - {x: -0.25, y: -0.58}
-      - {x: -0.22, y: -0.61}
-      - {x: 0.19999999, y: -0.61}
-      - {x: 0.22999999, y: -0.59}
-      - {x: 0.42, y: -0.32}
-      - {x: 0.42, y: -0.02}
+  m_Offset: {x: -0.02, y: -0.18}
+  serializedVersion: 2
+  m_Radius: 0.55
 --- !u!114 &114117835084933394
 MonoBehaviour:
   m_ObjectHideFlags: 1

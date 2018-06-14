@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212200269146764758}
   - component: {fileID: 114207936199073184}
   - component: {fileID: 114770718728029926}
-  - component: {fileID: 60375775071384024}
+  - component: {fileID: 61200957896653436}
   m_Layer: 0
   m_Name: BeefPre
   m_TagString: meat
@@ -43,8 +43,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!60 &60375775071384024
-PolygonCollider2D:
+--- !u!61 &61200957896653436
+BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -65,26 +65,9 @@ PolygonCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.64, y: -0.17}
-      - {x: 0.7, y: -0.08}
-      - {x: 0.7, y: 0.089999996}
-      - {x: 0.68, y: 0.22}
-      - {x: 0.5, y: 0.34}
-      - {x: 0.35, y: 0.37}
-      - {x: 0.099999994, y: 0.37}
-      - {x: -0.099999994, y: 0.29}
-      - {x: -0.41, y: 0.22}
-      - {x: -0.68, y: 0.089999996}
-      - {x: -0.7, y: -0.049999997}
-      - {x: -0.7, y: -0.22}
-      - {x: -0.55, y: -0.35999998}
-      - {x: -0.41, y: -0.41}
-      - {x: -0.19999999, y: -0.41}
-      - {x: 0, y: -0.35}
-      - {x: 0.38, y: -0.32}
-      - {x: 0.55, y: -0.24}
+  serializedVersion: 2
+  m_Size: {x: 1.6, y: 1.1}
+  m_EdgeRadius: 0
 --- !u!114 &114207936199073184
 MonoBehaviour:
   m_ObjectHideFlags: 1
