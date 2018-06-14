@@ -21,11 +21,10 @@ public class FoodReset : MonoBehaviour {
     public void ChengeResetFlgTrue()
     {
         ResetFlg = true ;
-        Invoke("ChengeResetFlgFalse",0.25f);
-       // ChengeResetFlgFalse();
+        Invoke("ChengeResetFlgFalse",0.1f);
     }
 
-    private void ChengeResetFlgFalse()
+    public void ChengeResetFlgFalse()
     {
         ResetFlg = false;
     }

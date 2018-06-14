@@ -64,8 +64,6 @@ public class ObjectCount : MonoBehaviour {
     GameObject CompletionButton;
     GameObject ResetButton;
 
-    EventSystemController EventSystemObject;
-
     Rigidbody2D[] CustomerRigid;//お客さんのRigidbody
 
     const int REMAINING = 3;
@@ -73,6 +71,8 @@ public class ObjectCount : MonoBehaviour {
     const int ALLFOOD = 10;//全混ぜスムージーが発動するまでに完成させなければいけないスムージーの個数
     const float InvokeTime = 1.0f;//プレイヤーの待ち時間
     const float ConstTime = 5.0f;//制限時間
+    const float ROTSPEED = 20f;//ミキサーを回転させるスピードの初期値
+    const float SPEEDDOWN = 0.91f;//ミキサーの減速速度
 
     private int foodcnt = 0;//食材の残りの数
     private float timelimit = ConstTime;
@@ -107,13 +107,13 @@ public class ObjectCount : MonoBehaviour {
     //ミキサーがフェードイン・フェードアウトするスピード
     const float speed = 0.01f;
 
+    //タップ操作無効
+    public bool CursorLock = false;
+
+    float rotSpeed = 0;//回転速度
+
     // Use this for initialization
     void Start() {
-        Cursor.lockState = CursorLockMode.Locked;//カーソルをロック
-        this.EventSystemObject = GameObject.Find("EventSystem").GetComponent<EventSystemController>();//EventSystemControllerスクリプトを取得
-        EventSystemObject.isInputEnable = false;//タッチ操作を無効化
-        Debug.Log(EventSystemObject.isInputEnable);
-
         this.Timer = GameObject.Find("Timer").GetComponent<Text>();
         this.Remaining = GameObject.Find("remaining").GetComponent<Text>();
         this.FoodObject = GameObject.Find("FoodOrder").GetComponent<Text>();
@@ -327,6 +327,20 @@ public class ObjectCount : MonoBehaviour {
                 }
                 break;
         }
+        //回転速度分、ミキサーを回転させる
+        MixerImage.transform.Rotate(0, 0, rotSpeed);
+
+        //ルーレットを減速させ、一定速度以下なら0にする
+        if (rotSpeed > 1)
+        {
+            rotSpeed *= SPEEDDOWN;
+        }
+        else if (rotSpeed > 0 && rotSpeed != 0)
+        {
+            rotSpeed = 0;
+        }
+
+
     }
 
     private void MainProcess()
@@ -335,6 +349,7 @@ public class ObjectCount : MonoBehaviour {
         {
             foodcnt++;
             playerflg = 99;
+            rotSpeed = ROTSPEED;
         }
         else if (foodflg != playerflg && playerflg != 99 && Input.GetMouseButtonUp(0))//注文とミキサーに入れたものが違うとき
         {
@@ -358,6 +373,7 @@ public class ObjectCount : MonoBehaviour {
         {
             OrderReset();//注文の切り替え
         }
+
     }
 
     private void TimeCount()
@@ -422,9 +438,8 @@ public class ObjectCount : MonoBehaviour {
 
     private void CursleFlagChange()//カーソル無効の解除
     {
-        Cursor.lockState = CursorLockMode.None;
-        EventSystemObject.isInputEnableChangeTrue() ;//タッチ操作を可能にする
-        Debug.Log(EventSystemObject.isInputEnable);
+        //Cursor.lockState = CursorLockMode.None;
+        CursorLock = true;
 
         if (SmoothieCount % ALLFOOD == 0 && SmoothieCount != 0)
         {
@@ -485,10 +500,8 @@ public class ObjectCount : MonoBehaviour {
         //Debug.Log("TimeReset");
         //Debug.Log(timelimit);
 
-        ResetButton.GetComponent<FoodReset>().InteractableChangeTrue();
-        Cursor.lockState = CursorLockMode.Locked;//カーソルをロック
-        EventSystemObject.isInputEnableChangeFalse();//タッチ操作無効
-        Debug.Log(EventSystemObject.isInputEnable);
+        //Cursor.lockState = CursorLockMode.Locked;//カーソルをロック
+        CursorLock = false;
 
         PlusColor.a = 1.0f;
         Performanceflg = true;
@@ -649,7 +662,8 @@ public class ObjectCount : MonoBehaviour {
         else
         {
             CustomerRigid[W].velocity = Vector2.zero;
-
+            ResetButton.GetComponent<FoodReset>().InteractableChangeTrue();
+            
             if (SmoothieCount % ALLFOOD == 0 && SmoothieCount != 0)
             {
                 ProcessFlg = (int)Process.FADEOUTPROCESS;//ミキサーのフェードアウト処理に移行

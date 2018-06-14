@@ -7,16 +7,10 @@ public class MouseOpereter : MonoBehaviour
     private Vector3 screenPoint;
     private Vector3 offset;
 
-    EventSystemController EventSystemObject;
+    ObjectCount CursorLock;
 
     void OnMouseDown()
     {
-        if (Cursor.lockState == CursorLockMode.Locked)
-        {
-            //Cursor.lockState = CursorLockMode.None;
-            return;  //lockStateがLockedだったら以後の処理をしない
-        }
-
         //カメラから見たオブジェクトの現在位置を画面位置座標に変換
         screenPoint = Camera.main.WorldToScreenPoint(transform.position);
 
@@ -29,10 +23,10 @@ public class MouseOpereter : MonoBehaviour
 
     void OnMouseDrag()
     {
-        if (Cursor.lockState == CursorLockMode.Locked)
+        if (!CursorLock.CursorLock)
         {
-           // Cursor.lockState = CursorLockMode.None;
-            return;  //lockStateがLockedだったら以後の処理をしない
+            //CursorLockがfalseなら以後の処理をしない
+            return;
         }
 
         //ドラッグ時のマウス位置をシーン上の座標に変換
@@ -52,8 +46,7 @@ public class MouseOpereter : MonoBehaviour
     void Start()
     {
         Input.multiTouchEnabled = false;//マルチタッチを無効化
-        this.EventSystemObject = GameObject.Find("EventSystem").GetComponent<EventSystemController>();//EventSystemControllerスクリプトを取得
-        EventSystemObject.isInputEnable = false;//タッチ操作を無効化
+        this.CursorLock = GameObject.Find("Mixer").GetComponent<ObjectCount>();//ObjectCountスクリプトを取得
     }
 
     //// Update is called once per frame
