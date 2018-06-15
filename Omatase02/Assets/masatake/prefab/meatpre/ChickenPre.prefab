@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212528224538922376}
   - component: {fileID: 114035718628116548}
   - component: {fileID: 114400762670709800}
-  - component: {fileID: 58128413748140052}
+  - component: {fileID: 60381276448102572}
   m_Layer: 0
   m_Name: ChickenPre
   m_TagString: meat
@@ -43,8 +43,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &58128413748140052
-CircleCollider2D:
+--- !u!60 &60381276448102572
+PolygonCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -56,8 +56,40 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.75
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.48, y: 1.48}
+    newSize: {x: 1.48, y: 1.48}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.61, y: -0.19}
+      - {x: 0.58, y: -0.11}
+      - {x: 0.59, y: 0.29}
+      - {x: 0.39, y: 0.55}
+      - {x: 0.26999998, y: 0.59999996}
+      - {x: 0.14, y: 0.62}
+      - {x: 0.049999997, y: 0.62}
+      - {x: 0, y: 0.59999996}
+      - {x: -0.22999999, y: 0.48}
+      - {x: -0.42, y: 0.48}
+      - {x: -0.55, y: 0.21}
+      - {x: -0.65999997, y: 0.19}
+      - {x: -0.68, y: 0.17}
+      - {x: -0.68, y: 0.04}
+      - {x: -0.61, y: -0.099999994}
+      - {x: -0.42, y: -0.22999999}
+      - {x: -0.22999999, y: -0.31}
+      - {x: -0.22, y: -0.42}
+      - {x: -0.19, y: -0.52}
+      - {x: -0.099999994, y: -0.58}
+      - {x: 0.25, y: -0.58}
+      - {x: 0.42999998, y: -0.47}
+      - {x: 0.61, y: -0.47}
 --- !u!114 &114035718628116548
 MonoBehaviour:
   m_ObjectHideFlags: 1

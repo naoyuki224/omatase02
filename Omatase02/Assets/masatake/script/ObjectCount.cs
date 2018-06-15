@@ -35,9 +35,6 @@ public class ObjectCount : MonoBehaviour {
     //合計金額に加算するときのテキストの色の変数
     Color PlusColor;
 
-    //人気度の色の変数
-    Color TrustTextColorGreen;
-    Color TrustTextColorRed;
 
     //画像を切り替えるための変数
     GameObject MixerImage;
@@ -59,23 +56,25 @@ public class ObjectCount : MonoBehaviour {
     Text AmountText;
     Text TrustText;
     Text PlusMoneyText;
-    Text TrustPerText;
 
     GameObject CompletionButton;
     GameObject ResetButton;
 
     Rigidbody2D[] CustomerRigid;//お客さんのRigidbody
 
-    const int REMAINING = 3;
+    const int REMAINING = 5;
     const int price = 100;//スムージーの単価
     const int ALLFOOD = 10;//全混ぜスムージーが発動するまでに完成させなければいけないスムージーの個数
     const float InvokeTime = 1.0f;//プレイヤーの待ち時間
+<<<<<<< HEAD
     const float ConstTime = 5.0f;//制限時間
     const float ROTSPEED = 20f;//ミキサーを回転させるスピードの初期値
     const float SPEEDDOWN = 0.91f;//ミキサーの減速速度
+=======
+>>>>>>> 3fb10a1087cc059692bee104f8571338e0f183f4
 
     private int foodcnt = 0;//食材の残りの数
-    private float timelimit = ConstTime;
+    private float timelimit = 9.9f;
     private string[] Order;
     private int foodflg = 99;//0でフルーツ、1で機械、2で肉、3で野菜、99で再取得(指定する種類を取得)
     private int playerflg = 99;//同上(プレイヤーが持っている種類)
@@ -100,6 +99,8 @@ public class ObjectCount : MonoBehaviour {
     public float ShakePowerText;
     public float ShakePowerPer;
 
+    bool trustflg = false;
+
     //お客さんがフェードイン、フェードアウトするときにどこまで移動するかの値
     float [] CustomerOutPosition;
     float[] CustomerInPosition;
@@ -114,6 +115,11 @@ public class ObjectCount : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
+<<<<<<< HEAD
+=======
+        Cursor.lockState = CursorLockMode.Locked;//カーソルをロック
+
+>>>>>>> 3fb10a1087cc059692bee104f8571338e0f183f4
         this.Timer = GameObject.Find("Timer").GetComponent<Text>();
         this.Remaining = GameObject.Find("remaining").GetComponent<Text>();
         this.FoodObject = GameObject.Find("FoodOrder").GetComponent<Text>();
@@ -170,12 +176,14 @@ public class ObjectCount : MonoBehaviour {
         this.Goodcomment[6] = "君もうまそうやな～ほんま";
 
         this.Badcomment[0] = "(この店)やめたら？";
-        this.Badcomment[1] = "あ　ほ　く　さ";
+        this.Badcomment[1] = "あ ほ く さ";
         this.Badcomment[2] = "こんなん商品なんないから";
         this.Badcomment[3] = "あのさぁ...";
         this.Badcomment[4] = "あっ...";
         this.Badcomment[5] = "はぁ～つっかえ！";
-        this.Badcomment[6] = "は？(威圧)";
+        this.Badcomment[6] = "いなりが入ってないやん！";
+
+        //this.CustomerImage[4].SetActive(false);
 
         this.CompletionButton = GameObject.Find("CompletionButton");
         this.ResetButton = GameObject.Find("ResetButton");
@@ -183,7 +191,7 @@ public class ObjectCount : MonoBehaviour {
         Remaining.text = (REMAINING - this.foodcnt).ToString("F0");
         Timer.text = this.timelimit.ToString("F1");
 
-        this.MixerImage = GameObject.Find("test");
+        this.MixerImage = GameObject.Find("mixerPrefab");
         this.BlackHoleImage = GameObject.Find("BlackHolePrefab");
 
         //ミキサーのRGB値を取得
@@ -221,25 +229,12 @@ public class ObjectCount : MonoBehaviour {
         TrustPerTransform = TrustText.GetComponent<Transform>();
 
         //人気度のテキストを揺らすときの開始時の位置を取得
-        TrustPerPosotion = TrustPerTransform.localPosition;
+        TrustPerPosotion = TrustPerTransform.position;
         TrustTextPosition = TrustTextTransform.position;
-
-        //人気度の色の設定
-        TrustTextColorGreen.r = 23f/255f;
-        TrustTextColorGreen.g = 227f/255f;
-        TrustTextColorGreen.b = 58f/255f;
-        TrustTextColorGreen.a = 1.0f;
-
-        TrustTextColorRed.r = 240f/255f;
-        TrustTextColorRed.g = 39f/255f;
-        TrustTextColorRed.b = 43f/255f;
-        TrustTextColorRed.a = 1.0f;
-
-        TrustText.GetComponent<Text>().color = TrustTextColorGreen;
 
         OrderCount();
 
-        AmountText.text = this.TotalAmount.ToString("F0") + "円";//合計金額
+        AmountText.text = string.Format("{0,8}", (this.TotalAmount.ToString("F0") + "円"));//合計金額
 
         TrustText.text = this.TrustPer.ToString("F0") + "％";//信頼度
     }
@@ -273,14 +268,7 @@ public class ObjectCount : MonoBehaviour {
         {
             ShakeRange = Random.insideUnitSphere;
             TrustTextTransform.position = TrustTextPosition + ShakeRange * ShakePowerText;
-            TrustPerTransform.localPosition = TrustPerPosotion + ShakeRange * ShakePowerPer;
-            if(TrustText.GetComponent<Text>().color != TrustTextColorRed)
-            {
-                TrustText.GetComponent<Text>().color = TrustTextColorRed;
-            }
-        }else if(TrustText.GetComponent<Text>().color != TrustTextColorGreen)
-        {
-            TrustText.GetComponent<Text>().color = TrustTextColorGreen;
+            TrustPerTransform.position = TrustPerPosotion + ShakeRange * ShakePowerPer;
         }
 
         switch (ProcessFlg)
@@ -359,6 +347,11 @@ public class ObjectCount : MonoBehaviour {
 
         TimeCount();//時間の取得
 
+        if (foodflg > 4 || this.timelimit <= 0)
+        {
+            OrderReset();//注文の切り替え
+        }
+
         if ((REMAINING - foodcnt) > 0)//食材の残りの数の表示
         {
             Remaining.text = (REMAINING - this.foodcnt).ToString("F0");
@@ -368,12 +361,15 @@ public class ObjectCount : MonoBehaviour {
             Remaining.text = "OK";
             CompletionButton.GetComponent<Completion>().InteractableChangeTrue();
         }
+<<<<<<< HEAD
 
         if (foodflg > 4 || this.timelimit <= 0)
         {
             OrderReset();//注文の切り替え
         }
 
+=======
+>>>>>>> 3fb10a1087cc059692bee104f8571338e0f183f4
     }
 
     private void TimeCount()
@@ -422,6 +418,7 @@ public class ObjectCount : MonoBehaviour {
             ProcessFlg = (int)Process.CUSTOMERIN;//お客さんの入店
         }
 
+        CompletionButton.GetComponent<Completion>().InteractableChangeFalse();//完成ボタンを押せないように変更
         //Debug.Log(Order[foodflg]);
         //Debug.Log(foodcnt);
     }
@@ -438,8 +435,12 @@ public class ObjectCount : MonoBehaviour {
 
     private void CursleFlagChange()//カーソル無効の解除
     {
+<<<<<<< HEAD
         //Cursor.lockState = CursorLockMode.None;
         CursorLock = true;
+=======
+        Cursor.lockState = CursorLockMode.None;
+>>>>>>> 3fb10a1087cc059692bee104f8571338e0f183f4
 
         if (SmoothieCount % ALLFOOD == 0 && SmoothieCount != 0)
         {
@@ -453,11 +454,9 @@ public class ObjectCount : MonoBehaviour {
 
     public void OrderReset()//注文の切り替え
     {
-        this.timelimit = ConstTime;//制限時間のリセット
+        this.timelimit = 9.9f;//制限時間のリセット
 
-        CompletionButton.GetComponent<Completion>().InteractableChangeFalse();//完成ボタンを押せなくする
-
-        if ((foodflg < 99 && REMAINING <= foodcnt) || ProcessFlg == (int)Process.BONUSTIME)//注文のスムージーが完成したとき
+        if((foodflg < 99 && REMAINING <= foodcnt) || ProcessFlg == (int)Process.BONUSTIME)//注文のスムージーが完成したとき
         {
             SmoothieCount++;
             TrustPer += 10;//信頼度の回復
@@ -491,8 +490,8 @@ public class ObjectCount : MonoBehaviour {
             FoodObject.text = Badcomment[Random.Range(0,7)];
         }
 
-        AmountText.text = this.TotalAmount.ToString("F0") + "円";//合計金額
-        PlusMoneyText.text = "＋" + (foodcnt * price).ToString("F0") + "円";
+        AmountText.text = string.Format("{0,5}", (this.TotalAmount.ToString("F0") + "円"));//合計金額
+        PlusMoneyText.text = "＋" + (foodcnt * price).ToString("F0");
 
         TrustText.text = this.TrustPer.ToString("F0") + "％";//信頼度
 
@@ -500,8 +499,13 @@ public class ObjectCount : MonoBehaviour {
         //Debug.Log("TimeReset");
         //Debug.Log(timelimit);
 
+<<<<<<< HEAD
         //Cursor.lockState = CursorLockMode.Locked;//カーソルをロック
         CursorLock = false;
+=======
+        ResetButton.GetComponent<FoodReset>().InteractableChangeTrue();
+        Cursor.lockState = CursorLockMode.Locked;//カーソルをロック
+>>>>>>> 3fb10a1087cc059692bee104f8571338e0f183f4
 
         PlusColor.a = 1.0f;
         Performanceflg = true;
@@ -512,7 +516,7 @@ public class ObjectCount : MonoBehaviour {
     void CommentTime()
     {
 
-        if(REMAINING > foodcnt || foodflg > 4)
+        if(foodcnt < REMAINING)
         {
             Invoke("NextProcess", 0.9f);
             CommentFlg = false;

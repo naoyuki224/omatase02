@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212617269738383428}
   - component: {fileID: 114106665331452708}
   - component: {fileID: 114620825536610730}
-  - component: {fileID: 61720252527810064}
+  - component: {fileID: 60046164000533860}
   m_Layer: 0
   m_Name: GreenpepperPre
   m_TagString: vegetable
@@ -43,8 +43,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &61720252527810064
-BoxCollider2D:
+--- !u!60 &60046164000533860
+PolygonCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -65,9 +65,29 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.2, y: 1.35}
-  m_EdgeRadius: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.35999998, y: -0.48}
+      - {x: 0.39, y: -0.37}
+      - {x: 0.42999998, y: -0.19}
+      - {x: 0.45999998, y: 0}
+      - {x: 0.45999998, y: 0.32999998}
+      - {x: 0.38, y: 0.42999998}
+      - {x: 0.16, y: 0.55}
+      - {x: 0.04, y: 0.59}
+      - {x: -0.049999997, y: 0.59}
+      - {x: -0.17999999, y: 0.52}
+      - {x: -0.32999998, y: 0.48}
+      - {x: -0.42999998, y: 0.41}
+      - {x: -0.45999998, y: 0.34}
+      - {x: -0.45999998, y: 0.089999996}
+      - {x: -0.39999998, y: -0.24}
+      - {x: -0.35, y: -0.47}
+      - {x: -0.28, y: -0.56}
+      - {x: -0.17, y: -0.59}
+      - {x: 0.14, y: -0.59}
+      - {x: 0.17999999, y: -0.57}
+      - {x: 0.29, y: -0.55}
 --- !u!114 &114106665331452708
 MonoBehaviour:
   m_ObjectHideFlags: 1

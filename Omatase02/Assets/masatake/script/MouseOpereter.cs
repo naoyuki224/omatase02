@@ -7,8 +7,11 @@ public class MouseOpereter : MonoBehaviour
     private Vector3 screenPoint;
     private Vector3 offset;
 
+<<<<<<< HEAD
     ObjectCount CursorLock;
 
+=======
+>>>>>>> 3fb10a1087cc059692bee104f8571338e0f183f4
     void OnMouseDown()
     {
         //カメラから見たオブジェクトの現在位置を画面位置座標に変換
@@ -43,11 +46,18 @@ public class MouseOpereter : MonoBehaviour
     }
 
     //Use this for initialization
+<<<<<<< HEAD
     void Start()
     {
         Input.multiTouchEnabled = false;//マルチタッチを無効化
         this.CursorLock = GameObject.Find("Mixer").GetComponent<ObjectCount>();//ObjectCountスクリプトを取得
     }
+=======
+   //void Start()
+   // {
+
+   // }
+>>>>>>> 3fb10a1087cc059692bee104f8571338e0f183f4
 
     //// Update is called once per frame
     //void Update () {
